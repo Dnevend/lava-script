@@ -60,10 +60,10 @@ async function main() {
     // generate eth wallets
     const walletCount = Number(process.env.REFER_COUNT);
 
+    let count = 1;
     let rpcPool = [];
 
-    for (let count = 1; count <= walletCount;) {
-        // login with refer code
+    while (count <= walletCount) {
         try {
             const wallet = ethers.Wallet.createRandom();
             const userHash = await login(wallet);
@@ -85,7 +85,7 @@ async function main() {
     // save wallet & rpc to `rpc.json` file
     const rpcPoolStr = JSON.stringify(rpcPool, null, 2)
     writeFileSync('./rpc.json', rpcPoolStr);
-    console.log(`refer success, total ${count - 1} item.`)
+    console.log(`✅ refer success, total ${count - 1} item.`)
 }
 
 main()
