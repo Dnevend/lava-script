@@ -1,0 +1,31 @@
+{
+  "name": "lava-script",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "refer": "node ./src/refer.js",
+    "start": "node ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dnevend/lava-script.git"
+  },
+  "keywords": [
+    "lava"
+  ],
+  "author": "Dnevend",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dnevend/lava-script/issues"
+  },
+  "homepage": "https://github.com/Dnevend/lava-script#readme",
+  "dependencies": {
+    "axios": "^1.6.7",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.11.1",
+    "fake-useragent": "^1.0.1",
+    "https-proxy-agent": "^7.0.4"
+  }
+}
