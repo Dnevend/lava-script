@@ -55,7 +55,7 @@ async function login(wallet) {
 }
 
 async function main() {
-    console.log('refer start...')
+    console.log('🚀 refer start...')
 
     // generate eth wallets
     const walletCount = Number(process.env.REFER_COUNT);

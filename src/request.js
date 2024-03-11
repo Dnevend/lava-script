@@ -7,17 +7,18 @@ let proxyAgent = null;
 
 const proxyUrl = process.env.PROXY;
 
+const timeout = 1000 * 30;
+
 if (proxyUrl && proxyUrl !== 'Your Proxy') {
     proxyAgent = new HttpsProxyAgent(process.env.PROXY, {
-        timeout: 1000 * 30,
+        timeout: timeout,
         keepAlive: true,
-        keepAliveMsecs: 1000 * 30
+        keepAliveMsecs: timeout
     });
 }
 
 export const request = axios.create({
-    baseURL: "https://points-api.lavanet.xyz/",
-    timeout: 1000 * 30,
+    baseURL: "https://points-api.lavanet.xyz/", timeout
 });
 
 request.interceptors.request.use((config) => {
