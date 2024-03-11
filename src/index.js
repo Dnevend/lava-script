@@ -1,22 +1,16 @@
-import { JsonRpcProvider } from 'ethers';
-import { readFile } from 'fs/promises'
+import { JsonRpcProvider, FetchRequest, ZeroAddress } from 'ethers';
+import { getProxyAgent, loadFile } from './helper.js';
 
-async function loadJson(filePath) {
-    try {
-        const data = await readFile(filePath, { encoding: 'utf8' });
-        return JSON.parse(data);
-    } catch (error) {
-        console.log("🐞 => loadJson => error:", error);
-        return null;
-    }
-}
+const proxyAgent = getProxyAgent(10 * 1000);
 
 async function run() {
 
     console.log('load json file...');
+    const rpcFileContent = await loadFile('./rpc.json');
 
-    const rpcJson = await loadJson('./rpc.json');
-    const rpcArray = rpcJson.map(it => it.rpc['ETH']);
+    const rpcJson = JSON.parse(rpcFileContent) || [];
+
+    const rpcUrls = rpcJson.map(it => it.rpc['ETH']);
 
     console.log('🚀 run start ...');
 
@@ -25,14 +19,24 @@ async function run() {
 
     while (true) {
         try {
-            const rpcUrl = rpcArray[Math.floor(Math.random() * rpcArray.length)];
-            const provider = new JsonRpcProvider(rpcUrl);
+
+            let provider = null;
+
+            const rpcUrl = rpcUrls[Math.floor(Math.random() * rpcUrls.length)];
+
+            if (proxyAgent) {
+                const fetchReq = new FetchRequest(rpcUrl);
+                fetchReq.getUrlFunc = FetchRequest.createGetUrlFunc({ agent: proxyAgent });
+                provider = new JsonRpcProvider(fetchReq);
+            } else {
+                provider = new JsonRpcProvider(rpcUrl);
+            }
 
             const block = await provider.getBlock();
             const transactions = await Promise.all(block.transactions.map(async txHash => await provider.getTransaction(txHash)));
 
             for (let tx of transactions) {
-                const { from = '0x0000000000000000000000000000000000000000', to = '0x0000000000000000000000000000000000000000' } = tx;
+                const { from = ZeroAddress, to = ZeroAddress } = tx;
                 balance = await provider.getBalance(from);
                 console.log(`${count++} ${from} balance: ${balance}`);
 

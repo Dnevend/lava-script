@@ -1,24 +1,14 @@
-import axios from "axios";
+import { getProxyAgent } from "./helper.js";
 import fakeUa from "fake-useragent";
-import { HttpsProxyAgent } from 'https-proxy-agent'
+import axios from "axios";
 import 'dotenv/config'
 
-let proxyAgent = null;
+const TIMEOUT = 30 * 1000;
 
-const proxyUrl = process.env.PROXY;
-
-const timeout = 1000 * 30;
-
-if (proxyUrl && proxyUrl !== 'Your Proxy') {
-    proxyAgent = new HttpsProxyAgent(process.env.PROXY, {
-        timeout: timeout,
-        keepAlive: true,
-        keepAliveMsecs: timeout
-    });
-}
+const proxyAgent = getProxyAgent(TIMEOUT);
 
 export const request = axios.create({
-    baseURL: "https://points-api.lavanet.xyz/", timeout
+    baseURL: "https://points-api.lavanet.xyz/", timeout: TIMEOUT
 });
 
 request.interceptors.request.use((config) => {
@@ -39,8 +29,4 @@ request.interceptors.request.use((config) => {
     config.withCredentials = true;
 
     return config;
-});
-
-request.interceptors.response.use((res) => {
-    return res;
 });
