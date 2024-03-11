@@ -1,5 +1,13 @@
 # lava-script
 
+## 介绍
+
+[Lava Website](https://points.lavanet.xyz/)
+
+[如何工作？](https://www.lavanet.xyz/blog/introducing-magma-points?utm_source=dashboard&utm_medium=referral&utm_campaign=magma)
+
+通过 Lava 网络生成的 RPC 地址，在链上进行交互（查询余额，发送交易...）赚取 Lava 积分。
+
 ## 安装
 
 ## 环境要求
