@@ -8,7 +8,11 @@ let proxyAgent = null;
 const proxyUrl = process.env.PROXY;
 
 if (proxyUrl && proxyUrl !== 'Your Proxy') {
-    proxyAgent = new HttpsProxyAgent(process.env.PROXY);
+    proxyAgent = new HttpsProxyAgent(process.env.PROXY, {
+        timeout: 1000 * 30,
+        keepAlive: true,
+        keepAliveMsecs: 1000 * 30
+    });
 }
 
 export const request = axios.create({

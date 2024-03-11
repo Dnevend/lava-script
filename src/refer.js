@@ -59,16 +59,13 @@ async function main() {
 
     // generate eth wallets
     const walletCount = Number(process.env.REFER_COUNT);
-    const wallets = new Array(walletCount).fill(0).map(() => ethers.Wallet.createRandom());
 
-    let count = 1;
     let rpcPool = [];
 
-    for (const wallet of wallets) {
-        console.log(`count: ${count}, address: ${wallet.address}`)
-
+    for (let count = 1; count <= walletCount;) {
         // login with refer code
         try {
+            const wallet = ethers.Wallet.createRandom();
             const userHash = await login(wallet);
             const ethRpcUrl = `https://eth1.lava.build/lava-referer-${userHash}/`
             rpcPool.push({
@@ -79,7 +76,7 @@ async function main() {
                     'ETH': ethRpcUrl
                 }
             })
-            count++;
+            console.log(`refer count ${count++} success:`, wallet.address);
         } catch (err) {
             console.log(`🐞 => refer ${count}  error:`, err);
         }
