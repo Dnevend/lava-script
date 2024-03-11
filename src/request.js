@@ -3,7 +3,13 @@ import fakeUa from "fake-useragent";
 import { HttpsProxyAgent } from 'https-proxy-agent'
 import 'dotenv/config'
 
-const proxyAgent = new HttpsProxyAgent(process.env.PROXY);
+let proxyAgent = null;
+
+const proxyUrl = process.env.PROXY;
+
+if (proxyUrl && proxyUrl !== 'Your Proxy') {
+    proxyAgent = new HttpsProxyAgent(process.env.PROXY);
+}
 
 export const request = axios.create({
     baseURL: "https://points-api.lavanet.xyz/",
