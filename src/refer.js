@@ -79,7 +79,6 @@ async function main() {
             const ethRpcUrl = `https://eth1.lava.build/lava-referer-${userHash}/`
             rpcPool.push({
                 address: wallet.address,
-                userHash,
                 rpc: {
                     'ETH': ethRpcUrl
                 }
