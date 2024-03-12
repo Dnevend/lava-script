@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { request } from './request.js';
 import { writeFileSync } from 'fs';
 import 'dotenv/config'
+import { generatePrivateKeys, sleep } from './helper.js';
 
 const requestUrl = {
     login: '/accounts/metamask/login/',
@@ -55,28 +56,36 @@ async function login(wallet) {
 }
 
 async function main() {
+
+    const { PHRASE = '', REFER_COUNT = '0' } = process.env;
+
+    if (!PHRASE || !REFER_COUNT) {
+        console.log(`🐞 => Please config your argument in \`.env\` file.`);
+        return
+    }
+
     console.log('🚀 refer start...')
 
     // generate eth wallets
-    const walletCount = Number(process.env.REFER_COUNT);
+    const privateKeys = generatePrivateKeys(PHRASE, Number(REFER_COUNT));
 
-    let count = 1;
+    let count = 0;
     let rpcPool = [];
 
-    while (count <= walletCount) {
+    while (count < privateKeys.length) {
         try {
-            const wallet = ethers.Wallet.createRandom();
+            const wallet = new ethers.Wallet(privateKeys[count]);
             const userHash = await login(wallet);
             const ethRpcUrl = `https://eth1.lava.build/lava-referer-${userHash}/`
             rpcPool.push({
                 address: wallet.address,
-                privateKey: wallet.privateKey,
                 userHash,
                 rpc: {
                     'ETH': ethRpcUrl
                 }
             })
-            console.log(`refer count ${count++} success:`, wallet.address);
+            console.log(`refer count ${++count} success:`, wallet.address);
+            await sleep(500);
         } catch (err) {
             console.log(`🐞 => refer ${count}  error:`, err);
         }
@@ -85,7 +94,7 @@ async function main() {
     // save wallet & rpc to `rpc.json` file
     const rpcPoolStr = JSON.stringify(rpcPool, null, 2)
     writeFileSync('./rpc.json', rpcPoolStr);
-    console.log(`✅ refer success, total ${count - 1} item.`)
+    console.log(`✅ refer success, total ${count} item.`)
 }
 
 main()

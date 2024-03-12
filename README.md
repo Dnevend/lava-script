@@ -39,6 +39,8 @@ npm install
 REFER_COUNT="100"
 # 邀请码
 INVITE_CODE="MMEMS"
+# 助记词
+PHRASE="Your Phrase"
 # 代理地址（可选）
 PROXY="Your Proxy"
 ```

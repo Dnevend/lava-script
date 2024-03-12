@@ -1,5 +1,5 @@
 import { JsonRpcProvider, FetchRequest, ZeroAddress } from 'ethers';
-import { getProxyAgent, loadFile } from './helper.js';
+import { getProxyAgent, loadFile, sleep } from './helper.js';
 
 const proxyAgent = getProxyAgent(10 * 1000);
 
@@ -43,10 +43,10 @@ async function run() {
                 balance = await provider.getBalance(to);
                 console.log(`${count++} ${to} balance: ${balance}`);
 
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await sleep(500);
             }
 
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await sleep(500);
         } catch (err) {
             console.log("🐞 => error:", err);
         }
