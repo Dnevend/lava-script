@@ -8,7 +8,12 @@ async function run() {
     console.log('load json file...');
     const rpcFileContent = await loadFile('./rpc.json');
 
-    const rpcJson = JSON.parse(rpcFileContent) || [];
+    if (!rpcFileContent) {
+        console.log('Please run `npm run refer` command first to generate rpc file!')
+        return
+    }
+
+    const rpcJson = JSON.parse(rpcFileContent);
 
     const rpcUrls = rpcJson.map(it => it.rpc['ETH']);
 
@@ -33,7 +38,7 @@ async function run() {
             }
 
             const block = await provider.getBlock();
-            const transactions = await Promise.all(block.transactions.map(async txHash => await provider.getTransaction(txHash)));
+            const transactions = await Promise.all(block.transactions.splice(0, Math.random() * 10).map(async txHash => await provider.getTransaction(txHash)));
 
             for (let tx of transactions) {
                 const { from = ZeroAddress, to = ZeroAddress } = tx;
@@ -43,7 +48,7 @@ async function run() {
                 balance = await provider.getBalance(to);
                 console.log(`${count++} ${to} balance: ${balance}`);
 
-                await sleep(500);
+                await sleep(Math.random() * 10 * 1000);
             }
 
             await sleep(500);
